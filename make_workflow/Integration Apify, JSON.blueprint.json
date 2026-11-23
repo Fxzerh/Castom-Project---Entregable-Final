@@ -1,0 +1,934 @@
+{
+    "name": "Integration Apify, JSON",
+    "flow": [
+        {
+            "id": 3,
+            "module": "apify:finishedActorRuns",
+            "version": 1,
+            "parameters": {
+                "__IMTHOOK__": 3093917
+            },
+            "mapper": {},
+            "metadata": {
+                "designer": {
+                    "x": 0,
+                    "y": 0
+                },
+                "setupValidation": {
+                    "result": {
+                        "valid": true,
+                        "fields": []
+                    },
+                    "version": 1,
+                    "configuration": "ea373621e76da98e"
+                },
+                "restore": {
+                    "parameters": {
+                        "__IMTHOOK__": {
+                            "data": {
+                                "editable": "false"
+                            },
+                            "label": "Cuenta de Fxzerh"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTHOOK__",
+                        "type": "hook:apify",
+                        "label": "Webhook",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 4,
+            "module": "apify:fetchDatasetItems",
+            "version": 1,
+            "parameters": {
+                "__IMTCONN__": 12464166
+            },
+            "mapper": {
+                "type": "clean",
+                "limit": "1500",
+                "format": "json",
+                "datasetId": "{{3.defaultDatasetId}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 300,
+                    "y": 0
+                },
+                "setupValidation": {
+                    "result": {
+                        "valid": true,
+                        "fields": []
+                    },
+                    "version": 1,
+                    "configuration": "2adb0b4c5b86fe4c"
+                },
+                "restore": {
+                    "expect": {
+                        "type": {
+                            "mode": "chose",
+                            "label": "Clean"
+                        },
+                        "format": {
+                            "mode": "chose",
+                            "label": "JSON"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "apify"
+                            },
+                            "label": "Second Apify Account API Token connectionfxzerh@gmail.com"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:apify2,apify",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "datasetId",
+                        "type": "text",
+                        "label": "Dataset ID",
+                        "required": true
+                    },
+                    {
+                        "name": "type",
+                        "type": "select",
+                        "label": "Data transformation",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "clean",
+                                "simplified",
+                                "none"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "format",
+                        "type": "select",
+                        "label": "Format",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "json",
+                                "csv",
+                                "html",
+                                "xml",
+                                "rss",
+                                "xlsx"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "type": "uinteger",
+                        "label": "Limit",
+                        "validate": {
+                            "max": 100000,
+                            "min": 1
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "type": "uinteger",
+                        "label": "Offset",
+                        "validate": {
+                            "min": 0
+                        }
+                    },
+                    {
+                        "name": "fields",
+                        "type": "text",
+                        "label": "Fields"
+                    },
+                    {
+                        "name": "omit",
+                        "type": "text",
+                        "label": "Omit Fields"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 9,
+            "module": "builtin:BasicAggregator",
+            "version": 1,
+            "parameters": {
+                "feeder": 4
+            },
+            "mapper": {
+                "descripcion": "{{4.descripcion}}",
+                "id_producto": "{{4.id_producto}}",
+                "precio_lista": "{{4.precio_lista}}",
+                "precio_promo": "{{4.precio_promo}}",
+                "supermercado": "{{4.supermercado}}",
+                "precio_referencia": "{{4.precio_referencia}}"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 600,
+                    "y": 0
+                },
+                "setupValidation": {
+                    "result": {
+                        "valid": true,
+                        "fields": []
+                    },
+                    "version": 1,
+                    "configuration": "dc0a7ec5d9b8aa7e"
+                },
+                "restore": {
+                    "extra": {
+                        "feeder": {
+                            "label": "Apify - Get Dataset Items [4]"
+                        },
+                        "target": {
+                            "label": "Custom"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "id": 6,
+            "module": "http:MakeRequest",
+            "version": 4,
+            "parameters": {
+                "authenticationType": "noAuth",
+                "tlsType": ""
+            },
+            "mapper": {
+                "url": "https://api-modelo-detector.onrender.com/procesar-lote",
+                "method": "post",
+                "contentType": "json",
+                "parseResponse": true,
+                "stopOnHttpError": true,
+                "timeout": "300",
+                "allowRedirects": true,
+                "shareCookies": false,
+                "requestCompressedContent": true,
+                "inputMethod": "dataStructure",
+                "bodyDataStructure": 589736,
+                "dataStructureBodyContent": {
+                    "fecha": "{{formatDate(now; \"YYYY-MM-DD\")}}",
+                    "productos": "{{9.array}}"
+                }
+            },
+            "metadata": {
+                "designer": {
+                    "x": 900,
+                    "y": 0
+                },
+                "setupValidation": {
+                    "version": 1,
+                    "configuration": "c4abbbae05cd8509",
+                    "result": {
+                        "valid": true,
+                        "fields": []
+                    }
+                },
+                "restore": {
+                    "parameters": {
+                        "authenticationType": {
+                            "label": "No authenticationUse when no credentials are required for the request."
+                        },
+                        "tlsType": {
+                            "label": "Empty"
+                        }
+                    },
+                    "expect": {
+                        "method": {
+                            "mode": "chose",
+                            "label": "POST"
+                        },
+                        "headers": {
+                            "mode": "chose"
+                        },
+                        "queryParameters": {
+                            "mode": "chose"
+                        },
+                        "contentType": {
+                            "label": "application/jsonEnter data in the JSON format, as a string or using a data structure."
+                        },
+                        "parseResponse": {
+                            "mode": "chose"
+                        },
+                        "stopOnHttpError": {
+                            "mode": "chose"
+                        },
+                        "allowRedirects": {
+                            "mode": "chose"
+                        },
+                        "shareCookies": {
+                            "mode": "chose"
+                        },
+                        "requestCompressedContent": {
+                            "mode": "chose"
+                        },
+                        "inputMethod": {
+                            "label": "Data structureDefine the JSON body with a data structure to map or enter values for each key. JSON reserved characters are escaped automatically."
+                        },
+                        "bodyDataStructure": {
+                            "label": "LoteScraping"
+                        },
+                        "dataStructureBodyContent": {
+                            "nested": {
+                                "productos": {
+                                    "mode": "edit"
+                                }
+                            }
+                        },
+                        "paginationType": {
+                            "label": "Empty"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "authenticationType",
+                        "type": "select",
+                        "label": "Authentication type",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "noAuth",
+                                "apiKeyConnection",
+                                "basicAuthConnection",
+                                "oAuth",
+                                "apiKey",
+                                "basicAuth"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "tlsType",
+                        "type": "select",
+                        "label": "Transport layer security (TLS)",
+                        "validate": {
+                            "enum": [
+                                "mTls",
+                                "tls"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "proxyKeychain",
+                        "type": "keychain:proxy",
+                        "label": "Proxy"
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "url",
+                        "type": "url",
+                        "label": "URL",
+                        "required": true
+                    },
+                    {
+                        "name": "method",
+                        "type": "select",
+                        "label": "Method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "get",
+                                "head",
+                                "post",
+                                "put",
+                                "patch",
+                                "delete",
+                                "options"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "headers",
+                        "type": "array",
+                        "label": "Headers",
+                        "spec": {
+                            "name": "value",
+                            "label": "Header",
+                            "type": "collection",
+                            "spec": [
+                                {
+                                    "name": "name",
+                                    "label": "Name",
+                                    "type": "text",
+                                    "required": true,
+                                    "validate": {
+                                        "pattern": "^[-!#$%&'*+.^_`|~0-9A-Za-z]+$"
+                                    }
+                                },
+                                {
+                                    "name": "value",
+                                    "label": "Value",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "queryParameters",
+                        "type": "array",
+                        "label": "Query parameters",
+                        "spec": {
+                            "name": "value",
+                            "label": "Parameter",
+                            "type": "collection",
+                            "spec": [
+                                {
+                                    "name": "name",
+                                    "label": "Name",
+                                    "type": "text",
+                                    "required": true
+                                },
+                                {
+                                    "name": "value",
+                                    "label": "Value",
+                                    "type": "text"
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        "name": "contentType",
+                        "type": "select",
+                        "label": "Body content type",
+                        "validate": {
+                            "enum": [
+                                "json",
+                                "multipart",
+                                "urlEncoded",
+                                "custom"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "parseResponse",
+                        "type": "boolean",
+                        "label": "Parse response",
+                        "required": true
+                    },
+                    {
+                        "name": "stopOnHttpError",
+                        "type": "boolean",
+                        "label": "Return error if HTTP request fails",
+                        "required": true
+                    },
+                    {
+                        "name": "timeout",
+                        "type": "uinteger",
+                        "label": "Timeout",
+                        "validate": {
+                            "min": 1,
+                            "max": 300
+                        }
+                    },
+                    {
+                        "name": "allowRedirects",
+                        "type": "boolean",
+                        "label": "Allow redirects",
+                        "required": true
+                    },
+                    {
+                        "name": "shareCookies",
+                        "type": "boolean",
+                        "label": "Share cookies with other HTTP modules",
+                        "required": true
+                    },
+                    {
+                        "name": "requestCompressedContent",
+                        "type": "boolean",
+                        "label": "Request compressed content",
+                        "required": true
+                    },
+                    {
+                        "name": "inputMethod",
+                        "type": "select",
+                        "label": "Body input method",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "dataStructure",
+                                "jsonString"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "bodyDataStructure",
+                        "type": "udt",
+                        "label": "Body structure",
+                        "required": true
+                    },
+                    {
+                        "name": "dataStructureBodyContent",
+                        "type": "collection",
+                        "label": "Body content",
+                        "spec": [
+                            {
+                                "name": "fecha",
+                                "type": "text",
+                                "label": null
+                            },
+                            {
+                                "name": "productos",
+                                "type": "array",
+                                "label": null,
+                                "spec": {
+                                    "type": "collection",
+                                    "spec": [
+                                        {
+                                            "name": "supermercado",
+                                            "label": null,
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "id_producto",
+                                            "label": null,
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "descripcion",
+                                            "label": null,
+                                            "type": "text"
+                                        },
+                                        {
+                                            "name": "precio_lista",
+                                            "label": null,
+                                            "type": "number"
+                                        },
+                                        {
+                                            "name": "precio_referencia",
+                                            "label": null,
+                                            "type": "number"
+                                        },
+                                        {
+                                            "name": "precio_promo",
+                                            "label": null,
+                                            "type": "number"
+                                        }
+                                    ],
+                                    "name": "value"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "name": "paginationType",
+                        "type": "select",
+                        "label": "Pagination type",
+                        "validate": {
+                            "enum": [
+                                "offsetBased",
+                                "pageBased",
+                                "urlBased",
+                                "tokenBased"
+                            ]
+                        }
+                    }
+                ],
+                "interface": [
+                    {
+                        "name": "data",
+                        "label": "Data",
+                        "type": "any"
+                    },
+                    {
+                        "name": "statusCode",
+                        "label": "Status Code",
+                        "type": "number"
+                    },
+                    {
+                        "name": "headers",
+                        "label": "Headers",
+                        "type": "collection",
+                        "spec": [
+                            {
+                                "name": "content-length",
+                                "label": "Content-Length",
+                                "type": "text"
+                            },
+                            {
+                                "name": "content-encoding",
+                                "label": "Content-Encoding",
+                                "type": "text"
+                            },
+                            {
+                                "name": "content-type",
+                                "label": "Content-Type",
+                                "type": "text"
+                            },
+                            {
+                                "name": "server",
+                                "label": "Server",
+                                "type": "text"
+                            },
+                            {
+                                "name": "cache-control",
+                                "label": "Cache-Control",
+                                "type": "text"
+                            },
+                            {
+                                "name": "set-cookie",
+                                "label": "Set-Cookie",
+                                "type": "array",
+                                "spec": {
+                                    "type": "text"
+                                }
+                            }
+                        ]
+                    }
+                ],
+                "advanced": true
+            }
+        },
+        {
+            "id": 17,
+            "module": "google-drive:uploadAFile",
+            "version": 4,
+            "parameters": {
+                "__IMTCONN__": 12472441
+            },
+            "filter": null,
+            "mapper": {
+                "data": "{{6.data.csv}}",
+                "select": "value",
+                "convert": false,
+                "filename": "precios_{{formatDate(now; \"YYYY-MM-DD\")}}.csv",
+                "folderId": "/1V6D69nbkNNNWQ733yCrMr0bfXD_uZVnI/1bWtrNICcWvV3Ub4dDrlU1xcSIer8i1ZG/1Y1X3E-If3PfL6jCiqfjNmBm_8qs403Aa",
+                "destination": "drive"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1200,
+                    "y": 0
+                },
+                "setupValidation": {
+                    "result": {
+                        "valid": true,
+                        "fields": []
+                    },
+                    "version": 1,
+                    "configuration": "7d058cbb7761fe56"
+                },
+                "restore": {
+                    "expect": {
+                        "select": {
+                            "label": "Select from the list"
+                        },
+                        "folderId": {
+                            "mode": "chose",
+                            "path": [
+                                "SIC - Curso de Samsung",
+                                "Castom Project",
+                                "Resultados del Scrapeo"
+                            ]
+                        },
+                        "destination": {
+                            "label": "My Drive"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google-drive"
+                            },
+                            "label": "German's Google Drive connectiongermanalfonso788@gmail.com"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google-restricted,google-drive",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "select",
+                        "type": "select",
+                        "label": "Enter a Folder ID",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "map",
+                                "value"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "title",
+                        "type": "text",
+                        "label": "New File Name"
+                    },
+                    {
+                        "name": "filename",
+                        "type": "text",
+                        "label": "File Name",
+                        "required": true
+                    },
+                    {
+                        "name": "data",
+                        "type": "buffer",
+                        "label": "Data",
+                        "required": true
+                    },
+                    {
+                        "name": "convert",
+                        "type": "boolean",
+                        "label": "Convert a File",
+                        "required": true
+                    },
+                    {
+                        "name": "destination",
+                        "type": "select",
+                        "label": "New Drive Location",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "drive",
+                                "share",
+                                "team"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "folderId",
+                        "type": "folder",
+                        "label": "New Folder Location",
+                        "required": true
+                    }
+                ]
+            }
+        },
+        {
+            "id": 13,
+            "module": "google-email:sendAnEmail",
+            "version": 4,
+            "parameters": {
+                "__IMTCONN__": 12487399
+            },
+            "mapper": {
+                "to": [
+                    "germanalfonso788@gmail.com",
+                    "milagroabdalabello@gmail.com",
+                    "solproyectandose@gmail.com"
+                ],
+                "content": "<div style=\"font-family: Arial, sans-serif; max-width: 780px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden; color: #1e293b;\">\r\n  <div style=\"background-color: #0f172a; color: #ffffff; padding: 20px;\">\r\n    <h2 style=\"margin: 0; font-size: 20px;\">🛒 Monitoreo Competitivo de Precios</h2>\r\n    <p style=\"margin: 6px 0 0; font-size: 13px; color: #cbd5e1;\">Resumen diario por cadena y rubro validado por IA · {{6.data.cantidad_validados}} validados / {{6.data.cantidad_anomalias}} anomalías</p>\r\n  </div>\r\n\r\n  <div style=\"padding: 16px 20px; background-color: #f8fafc; border-bottom: 1px solid #e2e8f0; font-size: 13px; line-height: 1.5;\">\r\n    <strong>📖 ¿Cómo leer este reporte?</strong>\r\n    <ul style=\"margin: 6px 0 0; padding-left: 18px; color: #334155;\">\r\n      <li><strong>Cada fila</strong> representa el precio mediano representativo de todo un rubro en esa cadena (filtrando ofertas engañosas o errores de carga).</li>\r\n      <li><strong>Lista vs. Promo:</strong> precio regular de referencia frente al valor promocional vigente. Si hay promo, se muestra en <span style=\"color:#15803d;\"><strong>verde</strong></span>.</li>\r\n      <li><strong>Score IA (0 a 100):</strong> mide qué tan competitivo es el precio frente al promedio del mercado.</li>\r\n      <li><strong>Estrellas (1 a 5):</strong> el mismo score en escala simple (★★★★★ = máxima competitividad).</li>\r\n      <li><strong>Semáforo:</strong> 🟢 <strong>≥ 70:</strong> Muy Competitivo | 🟡 <strong>50 a 69:</strong> Alineado con el Mercado | 🔴 <strong>&lt; 50:</strong> Poco Competitivo.</li>\r\n    </ul>\r\n  </div>\r\n\r\n  <div style=\"padding: 20px; overflow-x: auto;\">\r\n    <table style=\"width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;\">\r\n      <thead>\r\n        <tr style=\"background-color: #f1f5f9; border-bottom: 2px solid #cbd5e1;\">\r\n          <th style=\"padding: 10px;\">Cadena</th>\r\n          <th style=\"padding: 10px;\">Rubro</th>\r\n          <th style=\"padding: 10px; text-align: right;\">Precio Lista</th>\r\n          <th style=\"padding: 10px; text-align: right;\">Precio Promo</th>\r\n          <th style=\"padding: 10px; text-align: center;\">Índice de Competitividad</th>\r\n          <th style=\"padding: 10px; text-align: center;\">Estrellas</th>\r\n          <th style=\"padding: 10px; text-align: center;\">Semáforo</th>\r\n        </tr>\r\n      </thead>\r\n      <tbody>\r\n        {{6.data.html_validados}}\r\n      </tbody>\r\n    </table>\r\n  </div>\r\n\r\n  <div style=\"padding: 0 20px 20px; overflow-x: auto;\">\r\n    <h3 style=\"margin: 0 0 8px; font-size: 16px; color: #b91c1c;\">⚠️ Anomalías detectadas</h3>\r\n    <p style=\"margin: 0 0 10px; font-size: 12px; color: #64748b;\">Rubros con precios atípicos aislados automáticamente. Conviene revisarlos antes de sacar conclusiones.</p>\r\n    <table style=\"width: 100%; border-collapse: collapse; font-size: 14px; text-align: left;\">\r\n      <thead>\r\n        <tr style=\"background-color: #fef2f2; border-bottom: 2px solid #fecaca;\">\r\n          <th style=\"padding: 10px;\">Cadena</th>\r\n          <th style=\"padding: 10px;\">Rubro</th>\r\n          <th style=\"padding: 10px; text-align: right;\">Precio Lista</th>\r\n          <th style=\"padding: 10px; text-align: right;\">Precio Promo</th>\r\n          <th style=\"padding: 10px; text-align: right;\">Mercado medio</th>\r\n          <th style=\"padding: 10px;\">Motivo</th>\r\n        </tr>\r\n      </thead>\r\n      <tbody>\r\n        {{6.data.html_anomalias}}\r\n      </tbody>\r\n    </table>\r\n  </div>\r\n\r\n  <div style=\"background-color: #f8fafc; padding: 14px 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b; text-align: center;\">\r\n    Detalle completo (validados y anomalías) en Google Drive: <a href=\"{{17.webViewLink}}\" style=\"color: #2563eb;\">abrir CSV</a>\r\n  </div>\r\n</div>",
+                "subject": "📊 Reporte Diario de Precios - Supermercados ({{formatDate(now; \"DD/MM/YYYY\")}})",
+                "bodyType": "rawHtml"
+            },
+            "metadata": {
+                "designer": {
+                    "x": 1500,
+                    "y": 0
+                },
+                "setupValidation": {
+                    "version": 1,
+                    "configuration": "1eb09ff54e6f5167",
+                    "result": {
+                        "valid": true,
+                        "fields": []
+                    }
+                },
+                "restore": {
+                    "expect": {
+                        "cc": {
+                            "mode": "chose"
+                        },
+                        "to": {
+                            "mode": "chose",
+                            "items": [
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        "bcc": {
+                            "mode": "chose"
+                        },
+                        "from": {
+                            "mode": "chose",
+                            "label": "Empty"
+                        },
+                        "bodyType": {
+                            "label": "Raw HTML"
+                        },
+                        "attachments": {
+                            "mode": "chose"
+                        },
+                        "emailHeaders": {
+                            "mode": "chose"
+                        }
+                    },
+                    "parameters": {
+                        "__IMTCONN__": {
+                            "data": {
+                                "scoped": "true",
+                                "connection": "google-email"
+                            },
+                            "label": "CuakData's Gmail connectioncuakdata@gmail.com"
+                        }
+                    }
+                },
+                "parameters": [
+                    {
+                        "name": "__IMTCONN__",
+                        "type": "account:google-email",
+                        "label": "Connection",
+                        "required": true
+                    }
+                ],
+                "expect": [
+                    {
+                        "name": "to",
+                        "spec": {
+                            "name": "value",
+                            "type": "email",
+                            "label": "Recipient email address",
+                            "required": true,
+                            "validate": true
+                        },
+                        "type": "array",
+                        "label": "To",
+                        "required": true
+                    },
+                    {
+                        "name": "subject",
+                        "type": "text",
+                        "label": "Subject"
+                    },
+                    {
+                        "name": "bodyType",
+                        "type": "select",
+                        "label": "Body type",
+                        "required": true,
+                        "validate": {
+                            "enum": [
+                                "rawHtml",
+                                "collection"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "attachments",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "filename",
+                                    "type": "filename",
+                                    "label": "File name",
+                                    "required": true,
+                                    "semantic": "file:name"
+                                },
+                                {
+                                    "name": "data",
+                                    "type": "buffer",
+                                    "label": "Data",
+                                    "required": true,
+                                    "semantic": "file:data"
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Attachment"
+                        },
+                        "type": "array",
+                        "label": "Attachments"
+                    },
+                    {
+                        "name": "from",
+                        "type": "select",
+                        "label": "From"
+                    },
+                    {
+                        "name": "cc",
+                        "spec": {
+                            "name": "value",
+                            "type": "email",
+                            "label": "Recipient email address"
+                        },
+                        "type": "array",
+                        "label": "CC recipients"
+                    },
+                    {
+                        "name": "bcc",
+                        "spec": {
+                            "name": "value",
+                            "type": "email",
+                            "label": "Recipient email address"
+                        },
+                        "type": "array",
+                        "label": "BCC recipients"
+                    },
+                    {
+                        "name": "emailHeaders",
+                        "spec": {
+                            "name": "value",
+                            "spec": [
+                                {
+                                    "name": "key",
+                                    "type": "text",
+                                    "label": "Key",
+                                    "required": true
+                                },
+                                {
+                                    "name": "value",
+                                    "type": "text",
+                                    "label": "Value"
+                                }
+                            ],
+                            "type": "collection",
+                            "label": "Email header"
+                        },
+                        "type": "array",
+                        "label": "Additional email headers"
+                    },
+                    {
+                        "name": "content",
+                        "type": "text",
+                        "label": "Content"
+                    }
+                ]
+            }
+        }
+    ],
+    "metadata": {
+        "instant": true,
+        "version": 1,
+        "scenario": {
+            "roundtrips": 1,
+            "maxErrors": 3,
+            "autoCommit": true,
+            "autoCommitTriggerLast": true,
+            "sequential": false,
+            "slots": null,
+            "confidential": false,
+            "dataloss": false,
+            "dlq": false,
+            "freshVariables": false
+        },
+        "designer": {
+            "orphans": []
+        },
+        "zone": "us2.make.com",
+        "notes": []
+    }
+}
