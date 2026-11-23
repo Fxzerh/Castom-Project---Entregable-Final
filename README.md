@@ -47,13 +47,12 @@ mi-proyecto-entrega/
 │   └── requirements.txt                         # Dependencias del frontend
 ├── make_workflow/                               # Automatizacion del pipeline
 │   ├── blueprint.json                           # Blueprint exportado del escenario de Make
+│   ├── resultado_final_make.jpg                 # Captura del resultado de Make que llega al mail
 │   └── flujo_make.png                           # Captura de la arquitectura del flujo
 ├── data/                                        # Muestras de datos del pipeline
-│   ├── raw/
-│   │   └── sepa_raw_sample.csv                  # Muestra cruda del dataset historico SEPA
-│   └── processed/
-│       ├── df_limpio_v2.csv                     # Dataset procesado tras ETL y Feature Engineering
-│       └── canasta_representativa_10_rubros_v2.csv
+│   ├── datos_crudos_SEPA_sample.csv             # Muestra cruda del dataset historico SEPA
+|   ├── datos_limpios.csv                        # Dataset procesado tras ETL y Feature Engineering
+│   └── canasta_representativa_10_productos.csv  # Lista de los productos seleccionados y su mediana
 └── README.md                                    # Documentacion general del proyecto
 ```
 
