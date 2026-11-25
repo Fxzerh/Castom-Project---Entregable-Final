@@ -1,6 +1,4 @@
 async function pageFunction(context) {
-    // En Web Scraper el código corre DENTRO del navegador: no existe `page`.
-    // Se usan fetch, window y document directamente.
     const { jQuery: $, request, log } = context;
     const url = request.url;
 
@@ -27,70 +25,7 @@ async function pageFunction(context) {
     };
 
     // =====================================================
-    // CARREFOUR: 1) API de VTEX (JSON, sin selectores CSS)
-    // =====================================================
-    if (supermercado === 'Carrefour') {
-        try {
-            const termino = decodeURIComponent(new URL(url).pathname.replace(/^\//, '').split('/')[0]) || 'leche';
-
-            const r = await fetch(`/api/catalog_system/pub/products/search?ft=${encodeURIComponent(termino)}&_from=0&_to=49`);
-            const texto = await r.text();
-            let body = null;
-            try { body = JSON.parse(texto); } catch (e) { /* no era JSON */ }
-
-            log.info(`Carrefour API -> status: ${r.status}, es array: ${Array.isArray(body)}, items: ${Array.isArray(body) ? body.length : 0}`);
-
-            if (Array.isArray(body) && body.length > 0) {
-                const productosApi = [];
-                const vistosApi = new Set();
-
-                for (const p of body) {
-                    const offer = p.items?.[0]?.sellers?.[0]?.commertialOffer;
-                    if (!offer || !offer.Price || offer.Price <= 0) continue;
-                    if (vistosApi.has(p.productId)) continue;
-                    vistosApi.add(p.productId);
-
-                    const descripcion = `${p.brand || ''} ${p.productName || ''}`.replace(/\s+/g, ' ').trim();
-                    const lista = offer.ListPrice > offer.Price ? offer.ListPrice : offer.Price;
-                    const promo = offer.Price < lista ? offer.Price : null;
-
-                    productosApi.push({
-                        supermercado,
-                        id_producto: `Carrefour_${p.productId}`,
-                        descripcion,
-                        precio_lista: lista,
-                        precio_referencia: lista,
-                        precio_promo: promo
-                    });
-                }
-
-                log.info(`Carrefour: ${productosApi.length} productos extraídos vía API de ${url}`);
-                if (productosApi.length > 0) return productosApi;
-            } else {
-                log.warning(`Carrefour API sin datos. Muestra de respuesta: ${texto.substring(0, 300)}`);
-            }
-        } catch (e) {
-            log.warning(`Carrefour API falló: ${e.message}`);
-        }
-
-        // Si llegamos acá la API no sirvió: diagnóstico antes del fallback por HTML
-        try {
-            const info = {
-                title: document.title,
-                galleryItem: document.querySelectorAll('[class*="galleryItem"]').length,
-                productSummary: document.querySelectorAll('[class*="product-summary"]').length,
-                article: document.querySelectorAll('article').length,
-                texto: document.body.innerText.substring(0, 300)
-            };
-            log.info('DEBUG Carrefour: ' + JSON.stringify(info));
-            await context.saveSnapshot(); // screenshot + HTML en el Key-value store
-        } catch (e) {
-            log.warning(`No se pudo generar el debug de Carrefour: ${e.message}`);
-        }
-    }
-
-    // =====================================================
-    // ESPERAS Y SCROLL (todos los sitios; fallback de Carrefour)
+    // ESPERAS Y SCROLL (todos los sitios)
     // =====================================================
     await context.waitFor('article, [class*="product-summary"], [class*="carrefourar"], [class*="galleryItem"], [class*="producto"]', { timeout: 25000 }).catch(() => { });
 
@@ -103,7 +38,7 @@ async function pageFunction(context) {
     const vistos = new Set();
 
     // =====================================================
-    // 1. Tiendas VTEX por HTML (Carrefour fallback, DIA, Vea)
+    // 1. Tiendas VTEX por HTML (Carrefour, DIA, Vea)
     // =====================================================
     if (['Carrefour', 'DIA', 'Cencosud (Vea)'].includes(supermercado)) {
         let cards = $('[class*="product-summary"]');
