@@ -1,3 +1,15 @@
+# Presentación / Video
+
+Podés ver nuestra presentación narrada sobre inteligencia competitiva acá:  
+[Inteligencia competitiva para decidir a tiempo (Prezi)](https://prezi.com/page/kiNoHXPs53ij23MuZkSb67/inteligencia-competitiva-para-decidir-a-tiempo?mode=narrated&referral_token=gEcU9XlnB3FN)
+
+> **Cuak-Data** — Comisión 1, Grupo 5  
+> Somos el equipo **Cuak-Data**, integrado por:
+>
+> - **Alfonso Rodriguez Carlos German** — Data Science
+> - **Milagro Agustina Ramos Abdala Bello** — Solution Engineer
+> - **Melani Alexia Sol Morales Riveros** — Business Analyst
+
 # Detector de Anomalias de Precios y Comparador de Supermercados
 
 Sistema de extraccion web, procesamiento ETL, deteccion no supervisada de anomalias de precios mediante Machine Learning y analisis exploratorio interactivo para evaluar la competitividad de supermercados en Argentina.
