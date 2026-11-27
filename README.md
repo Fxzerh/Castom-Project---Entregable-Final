@@ -55,7 +55,7 @@ mi-proyecto-entrega/
 │   └── Entrenamiento_Modelo_de_Detección_v2.ipynb # ETL, entrenamiento, evaluacion y scoring
 ├── dashboard/                                   # Dashboard en Looker Studio
 │   ├── Castom_Looker_Datos.xlsx                 # Fuente de datos (se carga como Google Sheets)
-│   └── df_limpio_v2.csv                         # Dataset procesado utilizado por el dashboard
+│   └── df_limpio_v2.csv                         # Dataset procesado generado por el Colab (v2)
 ├── make_workflow/                               # Automatizacion del pipeline
 │   ├── blueprint.json                           # Blueprint exportado del escenario de Make
 │   ├── resultado_final_make.jpg                 # Captura del resultado de Make que llega al mail
