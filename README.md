@@ -26,7 +26,7 @@ El proyecto esta dividido en una etapa de **Entrenamiento y Analisis Offline** (
 [Get Dataset Items] ──> [Array Aggregator] ──> [HTTP POST /procesar-lote (Render)] ──> [Google Drive & Gmail]
                                                           │
                                                           ▼
-                                               [Dashboard Streamlit]
+                                               [Dashboard Looker Studio]
 ```
 
 ### Orquestacion en Make (`make_workflow/`)
@@ -53,7 +53,10 @@ mi-proyecto-entrega/
 │   └── requirements.txt                         # Dependencias de la API
 ├── colabs/                                      # Ciencia de datos y modelado
 │   └── Entrenamiento_Modelo_de_Detección_v2.ipynb # ETL, entrenamiento, evaluacion y scoring
-├── dashboard/                                   # Aplicacion web en Streamlit
+├── dashboard/                                   # Dashboard en Looker Studio y Streamlit
+│   │  # Looker Studio
+│   ├── Castom_Looker_Datos.xlsx                 # Fuente de datos (se carga como Google Sheets)
+│   │  # Streamlit
 │   ├── app_eda.py                               # Codigo principal del tablero EDA
 │   ├── df_limpio_v2.csv                         # Dataset procesado utilizado por el dashboard
 │   └── requirements.txt                         # Dependencias del frontend
@@ -121,6 +124,19 @@ mi-proyecto-entrega/
 
 ### D. Dashboard Exploratorio (`dashboard/`)
 
+#### Looker Studio
+* **Plataforma:** Looker Studio (antes Data Studio), conectado a un Google Sheets.
+* **Informe en vivo:** [https://datastudio.google.com/reporting/162ad760-53df-43f3-aafc-c553a2f2d56c]
+* **Fuente de datos:** `Castom_Looker_Datos.xlsx`, cargado como Google Sheets, con dos pestañas:
+  * `datos`: los 290 registros por fecha, cadena y rubro de `data/datos_limpios.csv` (SEPA, 5 al 11 de noviembre de 2026), con columnas adicionales calculadas con el modelo y la fórmula de scoring de producción: `score_competitividad`, `rango`, `estado` y `es_anomalia`.
+  * `correlaciones`: matriz de correlación de Pearson por rubro, en formato largo (`rubro`, `variable_x`, `variable_y`, `correlacion`).
+* **Secciones del tablero:**
+  1. **Comparativa de Precio por Supermercado según Rubro:** gráfico de barras con el precio mediano de referencia (Kg/L) por cadena y un selector de rubro.
+  2. **Distribuciones de Precios y Ratios:** columnas apiladas con la frecuencia del precio de referencia por rubro y de la competitividad de cada cadena frente a la mediana del mercado (ratios entre 0.5 y 1.5).
+  3. **Matriz de Correlación por Rubro:** tabla dinámica con selector de rubro y escala de colores de -1 (rojo) a 1 (azul).
+  4. **Selección Final de Features:** documentación de las 7 variables del análisis, 3 lineales y 4 ratios o no lineales.
+
+#### Streamlit (en caso de estar caída la pagina, usar el link de Looker Studio)
 * **Repositorio original:** [https://github.com/Fxzerh/datasets_CastomProject](https://github.com/Fxzerh/datasets_CastomProject)
 * **Aplicacion en Vivo:** [https://datasetscastomproject-ueslf5xjxitlxkzv6wheji.streamlit.app/](https://datasetscastomproject-ueslf5xjxitlxkzv6wheji.streamlit.app/)
 * **Secciones de `app_eda.py`:**
@@ -128,6 +144,7 @@ mi-proyecto-entrega/
   2. **Distribuciones de Precios y Ratios:** Histogramas para analizar la dispersion de precios por categoria y la competitividad relativa de cada cadena frente a la mediana del mercado.
   3. **Matriz de Correlacion por Rubro:** Mapa de calor (coeficiente de Pearson) entre las 7 variables numericas del dataset por categoria.
   4. **Seleccion Final de Features:** Documentacion de las 3 variables lineales y 4 ratios no lineales utilizados en el modelado.
+
 
 ## 4. Metricas de Evaluacion
 
@@ -147,7 +164,7 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-### 2. Ejecutar el Dashboard (`dashboard/`)
+### 2. Ejecutar el Dashboard con Streamlit (`dashboard/`)
 
 ```bash
 cd dashboard
