@@ -53,13 +53,9 @@ mi-proyecto-entrega/
 │   └── requirements.txt                         # Dependencias de la API
 ├── colabs/                                      # Ciencia de datos y modelado
 │   └── Entrenamiento_Modelo_de_Detección_v2.ipynb # ETL, entrenamiento, evaluacion y scoring
-├── dashboard/                                   # Dashboard en Looker Studio y Streamlit
-│   │  # Looker Studio
+├── dashboard/                                   # Dashboard en Looker Studio
 │   ├── Castom_Looker_Datos.xlsx                 # Fuente de datos (se carga como Google Sheets)
-│   │  # Streamlit
-│   ├── app_eda.py                               # Codigo principal del tablero EDA
-│   ├── df_limpio_v2.csv                         # Dataset procesado utilizado por el dashboard
-│   └── requirements.txt                         # Dependencias del frontend
+│   └── df_limpio_v2.csv                         # Dataset procesado utilizado por el dashboard
 ├── make_workflow/                               # Automatizacion del pipeline
 │   ├── blueprint.json                           # Blueprint exportado del escenario de Make
 │   ├── resultado_final_make.jpg                 # Captura del resultado de Make que llega al mail
@@ -136,15 +132,6 @@ mi-proyecto-entrega/
   3. **Matriz de Correlación por Rubro:** tabla dinámica con selector de rubro y escala de colores de -1 (rojo) a 1 (azul).
   4. **Selección Final de Features:** documentación de las 7 variables del análisis, 3 lineales y 4 ratios o no lineales.
 
-#### Streamlit (en caso de estar caída la pagina, usar el link de Looker Studio)
-* **Repositorio original:** [https://github.com/Fxzerh/datasets_CastomProject](https://github.com/Fxzerh/datasets_CastomProject)
-* **Aplicacion en Vivo:** [https://datasetscastomproject-ueslf5xjxitlxkzv6wheji.streamlit.app/](https://datasetscastomproject-ueslf5xjxitlxkzv6wheji.streamlit.app/)
-* **Secciones de `app_eda.py`:**
-  1. **Comparativa de Precio por Supermercado segun Rubro:** Grafico de barras interactivo con el precio mediano de referencia (Kg/L) por cadena para cada uno de los 10 rubros.
-  2. **Distribuciones de Precios y Ratios:** Histogramas para analizar la dispersion de precios por categoria y la competitividad relativa de cada cadena frente a la mediana del mercado.
-  3. **Matriz de Correlacion por Rubro:** Mapa de calor (coeficiente de Pearson) entre las 7 variables numericas del dataset por categoria.
-  4. **Seleccion Final de Features:** Documentacion de las 3 variables lineales y 4 ratios no lineales utilizados en el modelado.
-
 
 ## 4. Metricas de Evaluacion
 
@@ -164,21 +151,13 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-### 2. Ejecutar el Dashboard con Streamlit (`dashboard/`)
-
-```bash
-cd dashboard
-pip install -r requirements.txt
-streamlit run app_eda.py
-```
-
-### 3. Reproducir el Scraper (`actor_apify/`)
+### 2. Reproducir el Scraper (`actor_apify/`)
 
 1. Ingresar a `apify/web-scraper` en Apify Console.
 2. Cambiar la vista de **Input** de `Form` a `JSON`.
 3. Pegar el contenido de `actor_apify/input_config.json` y ejecutar **Start**.
 
-### 4. Importar el Flujo en Make (`make_workflow/`)
+### 3. Importar el Flujo en Make (`make_workflow/`)
 
 1. Crear un nuevo escenario en Make.
 2. Ir a **More (`...`) -> Import Blueprint** y cargar `make_workflow/blueprint.json`.
